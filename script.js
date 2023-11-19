@@ -24,7 +24,6 @@ let number2 = '';
 let operator = '';
 let result = 0;
 const display = document.querySelector('#display')
-/*display.textContent = `${number1}`;*/
 
 function createButtons() {
     const container = document.querySelector('#button-container')
@@ -43,35 +42,42 @@ function createButtons() {
 
 
 function setOperator(value) {
-    if (number1=='') {
+    if (number1=='' && number2=='' && operator=='') {
         alert("Pick a Number first!")
+    } else if (number1=='' && number2 !='') {
+        getResult(number2,value)
+        number2 = '';
+    } else if (number1 != '' && number2=='') {
+        getResult(number1, value)
+        number1 = '';
     }
     operator = value;
-    result = parseFloat(number1)
     display.textContent = 0;
 }
 
-function getResult(num1, num2, operator) {
+function getResult(num, operator) {
+    console.log(num, operator)
     if (operator=='+'){
-        result = parseFloat(num1) + parseFloat(num2)
+        result += parseFloat(num)
     }else if (operator=='-'){
-        result = parseFloat(num1) - parseFloat(num2)
+        result -= parseFloat(num)
     }else if (operator=='*'){
-        result = parseFloat(num1) * parseFloat(num2)
+        result *= parseFloat(num)
     }else if (operator=='/'){
-        result = parseFloat(num1) / parseFloat(num2)
+        result /= parseFloat(num)
     }
-    display.textContent = `${result}`
+
 }
 
 function selecteNumber(value) {
-    if (operator === '') {
-        number1 += value;
-        display.textContent = `${number1}`
-    } else {
+    if (number1 == '' && operator != '') {
         number2 += value;
         display.textContent = `${number2}`
     }
+    else if (number2 == '') {
+        number1 += value;
+        display.textContent = `${number1}`
+    } 
     
 }
 
@@ -83,6 +89,12 @@ function clear() {
     display.textContent = 0
 }
 
+function endResult(){
+    if (number2 != ''){
+        setOperator(operator)
+    }
+    display.textContent = `${result}`
+}
 
 function addListener(button, value) {
     if ( value == '.' || value == ',') {
@@ -94,10 +106,11 @@ function addListener(button, value) {
         button.addEventListener('click', () => {
             clear()
         }) 
+        button.setAttribute('style', 'background-color: red')
     }
     else if(value =='='){
         button.addEventListener('click', () => {
-            getResult(number1, number2, operator)
+            endResult()
         })   
     } else if(value=='+' || value == '-' || value == '*' || value == '/'){
     button.addEventListener('click', () => {
